@@ -1,0 +1,74 @@
+// import { useEffect } from "react";
+// import { messaging } from "./firebase";
+// import { getToken } from "firebase/messaging";
+// // import logo from "./logo.svg";
+// import "./App.css";
+
+// function App() {
+//   async function requestPermission() {
+//     const permission = await Notification.requestPermission();
+//     if (permission === "granted") {
+//       // Generate Token
+//       const token = await getToken(messaging, {
+//         vapidKey:
+//           "BI4A0N0FAyzpaLZlmyLSAk1sHrQ1jokDeHH6h3sbrhsRM9pFv6ykOM7z2FhIvSXbHf_wJFW9qRZic4aIGczSIcI",
+//       });
+//       console.log("Token Gen", token);
+//       // Send this token  to server ( db)
+//     } else if (permission === "denied") {
+//       alert("You denied for the notification");
+//     }
+//   } 
+
+//   useEffect(() => {
+//     // Req user for notification permission
+//     requestPermission();
+//   }, []);
+
+//   return (
+//     <div className="App">
+//       <h1>Hello Everyone</h1>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+
+import { useEffect } from "react";
+import { messaging } from "./firebase";
+import { getToken, isSupported } from "firebase/messaging";
+
+function App() {
+  useEffect(() => {
+    async function requestPermission() {
+      const supported = await isSupported();
+      if (!supported) {
+        alert("Push notifications are not supported on this browser.");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const token = await getToken(messaging, {
+          vapidKey: "BI4A0N0FAyzpaLZlmyLSAk1sHrQ1jokDeHH6h3sbrhsRM9pFv6ykOM7z2FhIvSXbHf_wJFW9qRZic4aIGczSIcI",
+        });
+        console.log("Token Gen", token);
+      } else if (permission === "denied") {
+        alert("You denied the notification");
+      }
+    }
+
+    requestPermission();
+  }, []);
+
+  return (
+    <div className="App">
+      <h1>Hello Everyone</h1>
+    </div>
+  );
+}
+
+export default App;
